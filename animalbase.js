@@ -12,6 +12,12 @@ const Animal = {
     age: 0
 };
 
+const settings ={
+filter: "all",
+sortBy: "name",
+sortDir: "asc"
+ }
+
 function start( ) {
     console.log("ready");
 
@@ -41,13 +47,13 @@ async function loadJSON() {
 }
 
 function prepareObjects( jsonData ) {
-    allAnimals = jsonData.map( preapareObject );
+    allAnimals = jsonData.map( prepareObject );
 
     // TODO: This might not be the function we want to call first
     displayList(allAnimals);
 }
 
-function preapareObject( jsonObject ) {
+function prepareObject( jsonObject ) {
     const animal = Object.create(Animal);
     
     const texts = jsonObject.fullname.split(" ");
@@ -62,20 +68,31 @@ function preapareObject( jsonObject ) {
 
 function selectFilter(event){
     const filter = event.target.dataset.filter;
-    filterList(filter);
+/*     filterList(filter);
+ */setFilter(filter)  
+ }
+
+    function setFilter(filter){
+        settings.filterBy = filter;
+        buildList()
     }
     
-    function filterList(filterBy){
-    let filteredList = allAnimals;
-    if(filterBy==="cat"){
+    function filterList(filteredList){
+/*     let filteredList = allAnimals;
+ */    if(settings.filterBy==="cat"){
         filteredList = allAnimals.filter(isCat);
     }
-    else if(filterBy==="dog"){
+    else if(settings.filterBy==="dog"){
         filteredList = allAnimals.filter(isDog);
     } 
+else {
+    filteredList = allAnimals;
+}
+
+/* return filteredList; 
     
-    
-    displayList(filteredList); 
+   */  
+return filteredList; 
     }
     
     function isCat(animal){
@@ -86,18 +103,6 @@ function selectFilter(event){
         return animal.type === "dog";
     }
 
-
-    function sortList(sortBy){
-        let sortedList = allAnimals;
-
-if(sortBy ==="name"){
-    sortedList = sortedList.sort(sortByName);
-}
-else if(sortBy === "type"){
-    sortedList = sortedList.sort(sortByType);
-}
-displayList(sortedList);
-    }
 
     function sortByName(animalA, animalB){
         if(animalA.name < animalB.name){
@@ -114,41 +119,69 @@ displayList(sortedList);
             return 1;
         }
     }
-
+    function sortList(sortBy){
+        let sortedList = allAnimals;
+    
+        if(sortBy ==="name"){
+            sortedList = sortedList.sort(sortByName);
+        }
+        else if(sortBy === "type"){
+            sortedList = sortedList.sort(sortByType);
+        }
+        displayList(sortedList);
+    }
 
      function selectSort(event){
         const sortBy = event.target.dataset.sort;
         const sortDir = event.target.dataset.sortDirection;
 
-        //toggle the direction
+        const oldElement = document.querySelector(`[data-sort='${settings.sortBy}']`);
+        oldElement.classList.remove("sortby");
+//indicate active sort
+event.target.classList.add("sortby");
 
+        //toggle the direction
         if(sortDir==="asc"){
             event.target.dataset.sortDirection = "desc";
         }else{
             event.target.dataset.sortDirection = "asc";
         }
-        sortList(sortBy, sortDir);
+        setSort(sortBy, sortDir);
+        }
+
+        function setSort(sortBy, sortDir){
+settings.sortBy = sortBy;
+settings.sortDir = sortDir;
+buildList();
         }
         
     
-        function sortList(sortBy, sortDir){
-            let sortedList = allAnimals;
-    let direction = 1;
-    if(sortDir==="desc"){
+        function sortList(sortedList){
+/*             let sortedList = allAnimals;
+ */    let direction = 1;
+    if(settings.sortDir==="desc"){
         direction = -1;
+    } else{
+        settings.direction = 1;
     }
 
         sortedList = sortedList.sort(sortByProperty);
     
     function sortByProperty(animalA, animalB){
-        if(animalA[sortBy] < animalB[sortBy]){
+        if(animalA[settings.sortBy] < animalB[settings.sortBy]){
             return -1 * direction;
         } else{
             return 1 * direction;
         }
     }
 
-    displayList(sortedList);
+    return sortedList;
+        }
+
+        function buildList(){
+            const currentList = filterList(allAnimals);
+            const sortedList = sortList(currentList);
+            displayList(sortedList);
         }
 
 function displayList(animals) {
