@@ -116,54 +116,40 @@ displayList(sortedList);
     }
 
 
-    function selectSort(event){
-        const sort = event.target.dataset.sort;
-        sortList(sort);
+     function selectSort(event){
+        const sortBy = event.target.dataset.sort;
+        const sortDir = event.target.dataset.sortDirection;
+
+        //toggle the direction
+
+        if(sortDir==="asc"){
+            event.target.dataset.sortDirection = "desc";
+        }else{
+            event.target.dataset.sortDirection = "asc";
         }
-        
-        function sortedList(sortBy){
-        let sortList = allAnimals;
-        if(sortBy==="cat"){
-            sortList = allAnimals.sort(isCat);
-        }
-        else if(sortBy==="dog"){
-            sortList = allAnimals.sort(isDog);
-        } 
-        
-        
-        displayList(sortList); 
+        sortList(sortBy, sortDir);
         }
         
     
-    
-        function sortList(sortBy){
+        function sortList(sortBy, sortDir){
             let sortedList = allAnimals;
+    let direction = 1;
+    if(sortDir==="desc"){
+        direction = -1;
+    }
+
+        sortedList = sortedList.sort(sortByProperty);
     
-    if(sortBy ==="name"){
-        sortedList = sortedList.sort(sortByName);
+    function sortByProperty(animalA, animalB){
+        if(animalA[sortBy] < animalB[sortBy]){
+            return -1 * direction;
+        } else{
+            return 1 * direction;
+        }
     }
-    else if(sortBy === "type"){
-        sortedList = sortedList.sort(sortByType);
-    }
+
     displayList(sortedList);
         }
-    
-        function sortByName(animalA, animalB){
-            if(animalA.name < animalB.name){
-                return -1;
-            } else{
-                return 1;
-            }
-        }
-    
-        function sortByType(animalA, animalB){
-            if(animalA.type < animalB.type){
-                return -1;
-            } else{
-                return 1;
-            }
-        }
-
 
 function displayList(animals) {
     // clear the list
