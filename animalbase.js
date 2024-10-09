@@ -24,7 +24,11 @@ function start( ) {
 function registerButtons(){
     document.querySelectorAll("[data-action='filter']")
     .forEach(button => button.addEventListener("click", selectFilter));
-    }
+    
+    document.querySelectorAll("[data-action='sort']")
+    .forEach(button => button.addEventListener("click", selectSort));
+
+}
 
 async function loadJSON() {
     const response = await fetch("animals.json");
@@ -81,6 +85,84 @@ function selectFilter(event){
     function isDog(animal){
         return animal.type === "dog";
     }
+
+
+    function sortList(sortBy){
+        let sortedList = allAnimals;
+
+if(sortBy ==="name"){
+    sortedList = sortedList.sort(sortByName);
+}
+else if(sortBy === "type"){
+    sortedList = sortedList.sort(sortByType);
+}
+displayList(sortedList);
+    }
+
+    function sortByName(animalA, animalB){
+        if(animalA.name < animalB.name){
+            return -1;
+        } else{
+            return 1;
+        }
+    }
+
+    function sortByType(animalA, animalB){
+        if(animalA.type < animalB.type){
+            return -1;
+        } else{
+            return 1;
+        }
+    }
+
+
+    function selectSort(event){
+        const sort = event.target.dataset.sort;
+        sortList(sort);
+        }
+        
+        function sortedList(sortBy){
+        let sortList = allAnimals;
+        if(sortBy==="cat"){
+            sortList = allAnimals.sort(isCat);
+        }
+        else if(sortBy==="dog"){
+            sortList = allAnimals.sort(isDog);
+        } 
+        
+        
+        displayList(sortList); 
+        }
+        
+    
+    
+        function sortList(sortBy){
+            let sortedList = allAnimals;
+    
+    if(sortBy ==="name"){
+        sortedList = sortedList.sort(sortByName);
+    }
+    else if(sortBy === "type"){
+        sortedList = sortedList.sort(sortByType);
+    }
+    displayList(sortedList);
+        }
+    
+        function sortByName(animalA, animalB){
+            if(animalA.name < animalB.name){
+                return -1;
+            } else{
+                return 1;
+            }
+        }
+    
+        function sortByType(animalA, animalB){
+            if(animalA.type < animalB.type){
+                return -1;
+            } else{
+                return 1;
+            }
+        }
 
 
 function displayList(animals) {
